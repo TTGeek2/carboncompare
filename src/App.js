@@ -170,13 +170,53 @@ const carbonData = {
   "Desk Lamp": 4.8
 };
 
+// Create a forest-themed color palette
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2e7d32',
+      main: '#2E7D32', // Forest green
+      light: '#4CAF50',
+      dark: '#1B5E20',
     },
     secondary: {
-      main: '#1976d2',
+      main: '#795548', // Earth brown
+      light: '#A1887F',
+      dark: '#4E342E',
+    },
+    background: {
+      default: '#F1F8E9', // Light sage green
+      paper: 'rgba(255, 255, 255, 0.9)', // Semi-transparent white
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h3: {
+      fontWeight: 600,
+      color: '#1B5E20', // Dark forest green
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backdropFilter: 'blur(8px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderRadius: '12px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            '&:hover fieldset': {
+              borderColor: '#2E7D32',
+            },
+          },
+        },
+      },
     },
   },
 });
@@ -222,43 +262,67 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container maxWidth="md">
-        <Box sx={{ my: 4, textAlign: 'center' }}>
-          <Co2Icon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
-          <Typography variant="h3" component="h1" gutterBottom>
-            Carbon Footprint Comparator
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" paragraph>
-            Enter a carbon amount (in kg CO2) to see equivalent items
-          </Typography>
-          
-          <TextField
-            fullWidth
-            label="Carbon Amount (kg CO2)"
-            type="number"
-            value={carbonAmount}
-            onChange={handleInputChange}
-            sx={{ mb: 4 }}
-          />
+      <Box
+        sx={{
+          minHeight: '100vh',
+          backgroundImage: 'url("https://images.unsplash.com/photo-1511497584788-876760111969?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          py: 4,
+        }}
+      >
+        <Container maxWidth="md">
+          <Box sx={{ 
+            my: 4, 
+            textAlign: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            borderRadius: '16px',
+            p: 4,
+            backdropFilter: 'blur(8px)',
+          }}>
+            <Co2Icon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
+            <Typography variant="h3" component="h1" gutterBottom>
+              Carbon Footprint Comparator
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary" paragraph>
+              Enter your carbon footprint in kg CO2 to see equivalent comparisons
+            </Typography>
+            
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Carbon Footprint (kg CO2)"
+              type="number"
+              value={carbonAmount}
+              onChange={handleInputChange}
+              sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}
+            />
 
-          <Grid container spacing={3}>
-            {comparisons.map((comparison, index) => (
-              <Grid item xs={12} key={index}>
-                <Card elevation={3}>
-                  <CardContent>
-                    <Typography variant="h5" component="div" gutterBottom>
-                      {comparison.quantity}x {comparison.item}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      Each {comparison.item} produces {comparison.carbon} kg CO2
-                    </Typography>
-                  </CardContent>
-                </Card>
+            {comparisons.length > 0 && (
+              <Grid container spacing={3} justifyContent="center">
+                {comparisons.map((comparison, index) => (
+                  <Grid item xs={12} sm={4} key={index}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h4" component="div" color="primary">
+                          {comparison.quantity}x
+                        </Typography>
+                        <Typography variant="h6" component="div" color="secondary">
+                          {comparison.item}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {comparison.carbon} kg CO2 each
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Container>
+            )}
+          </Box>
+        </Container>
+      </Box>
     </ThemeProvider>
   );
 }
